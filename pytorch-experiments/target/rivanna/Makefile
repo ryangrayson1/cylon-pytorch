@@ -3,11 +3,9 @@ USER_SCRATCH=/scratch/${USER}
 #
 # this needs to be fixed
 #
-PROJECT_DIR=${USER_SCRATCH}/mlcommons/benchmarks/cloudmask
-PROJECT_DATA=${USER_SCRATCH}/data
-#
-# this needs to be changed in prg
-#
+PROJECT_DIR=${USER_SCRATCH}/cylon-pytorch
+# PROJECT_DATA=${USER_SCRATCH}/data
+
 NAME=cylon-pytorch
 
 .PHONY: image-singularity image-docker
@@ -20,26 +18,13 @@ cloudmesh-install:
 	pip install cloudmesh-ee -U
 
 
-download:
-	git clone git@github.com:laszewsk/mlcommons.git
-
 requirements:
 	time pip install -r requirements.txt
 
-data: 
-	mkdir -p ${PROJECT_DATA}/ssts
-	mkdir -p ${PROJECT_DATA}/one-day
-	echo -n "Downloading first portion of data..."
-	cd ${PROJECT_DATA}; ${AWS_S3} sync s3://sciml-datasets/es/cloud_slstr_ds1/one-day ./one-day --cli-read-timeout 0
-	echo -n "Downloading second portion of data..."
-	cd ${PROJECT_DATA}; ${AWS_S3} sync s3://sciml-datasets/es/cloud_slstr_ds1/ssts ./ssts --cli-read-timeout 0
-
+data:
+	# fix me
 
 project: project.json generate
-
-setup:
-	python setup_env_and_yaml.py
-	source ~/ENV3/bin/activate && pip install -r /scratch/${USER}/mlcommons/benchmarks/cloudmask/experiments/rivanna/requirements.txt
 
 generate: jobs-project.sh 
 
@@ -48,24 +33,9 @@ run: submit
 submit:
 	-sh jobs-project.sh
 
-localscratch: localscratch.json
-
 
 jobs-%.sh: %.json
 	cms sbatch generate submit --name=$<  > $@
-
-
-simple:
-	cms sbatch generate \
-	           --source=simple.in.slurm \
-	           --config=$< \
-	           --name=$(basename $@) \
-	           --noos \
-	           --os=USER,HOME \
-		   	   --nocm \
-	           --output_dir=./$(basename $@) \
-               --source_dir=. \
-               --verbose
 
 
 %.json: 
@@ -97,36 +67,18 @@ status:
 
 
 clean:
-	@-rm -rf localscratch localscratch.json jobs-localscratch.sh
 	@-rm -rf project project.json jobs-project.sh
 	@-rm -f rivanna.slurm
 	@-rm -rf '__pycache__'
 	@-rm -rf *~
 
 
-# image
 
+image:
+	cms rivanna singularity build multigpu.def
 
-image-singularity:
-	cd image-singularity; make image
-	mv image-singularity/cloudmask.sif .
+run:
+	# fix me
 
-run-singularity:
-	cd image-singularity; make run
-
-shell-singularity:
-	cd image-singularity; make shell
-
-shell-rivanna:
-	cd image-singularity; make shell-rivanna
-
-run: run-singularity
-
-image: image-singularity
-
-push:
-	-git push
-	ssh -tt rivanna "cd /scratch/thf2bn/mlcommons/benchmarks/cloudmask; ssh-add; git pull"
-
-
-shell: shell-singularity
+shell:
+	# fix me
