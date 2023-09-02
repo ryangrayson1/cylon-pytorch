@@ -1,20 +1,30 @@
 SHELL=/bin/bash
-AWS_S3=aws s3 --no-sign-request --endpoint-url https://s3.echo.stfc.ac.uk
 USER_SCRATCH=/scratch/${USER}
+#
+# this needs to be fixed
+#
 PROJECT_DIR=${USER_SCRATCH}/mlcommons/benchmarks/cloudmask
 PROJECT_DATA=${USER_SCRATCH}/data
-NAME=cloudmask
+#
+# this needs to be changed in prg
+#
+NAME=cylon-pytorch
 
 .PHONY: image-singularity image-docker
 
 all: requirements data
+
+cloudmesh-install:
+	pip install cloudmesh-common -U
+	pip install cloudmesh-vpn -U
+	pip install cloudmesh-ee -U
 
 
 download:
 	git clone git@github.com:laszewsk/mlcommons.git
 
 requirements:
-	time pip install -r ${PROJECT_DIR}/experiments/rivanna/requirements.txt
+	time pip install -r requirements.txt
 
 data: 
 	mkdir -p ${PROJECT_DATA}/ssts
@@ -58,7 +68,7 @@ simple:
                --verbose
 
 
-%.json: config-new.yaml
+%.json: 
 	cms sbatch generate \
 	           --source=job.in.slurm \
 	           --config=$< \
