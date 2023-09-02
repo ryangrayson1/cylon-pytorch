@@ -24,9 +24,7 @@ echo "SLURM_JOB_PARTITION: $SLURM_JOB_PARTITION"
 echo "SLURM_JOB_RESERVATION: $SLURM_JOB_RESERVATION"
 echo "SLURM_SUBMIT_HOST: $SLURM_SUBMIT_HOST"
 
-# mydef is not a good name as it leads to mydef.sif this should be mnist.def and mnist.sif
-# to create one should use cms rivanna singularity build mnist.def in that dir
-# 
+
 echo "Working in $(pwd)"
 # echo "Repository Revision: $(git rev-parse HEAD)"
 # echo "Python Version: $(singularity exec mnist.sif python --version)"
@@ -42,11 +40,11 @@ echo "SHOULD HAVE 2 GPUs"
 nvidia-smi
 
 echo "checking python..."
-singularity exec mydef.sif python --version
+singularity exec pytorch.sif python --version
 
 echo "executing..."
 # What is p1 and p2 really standing for, use proper names.
-singularity exec --nv mydef.sif python multigpu.py {experiment.p1} {experiment.p2}
+singularity exec --nv pytorch.sif python multigpu.py {experiment.p1} {experiment.p2}
 
 echo "==================================================="
 seff $SLURM_JOB_ID
