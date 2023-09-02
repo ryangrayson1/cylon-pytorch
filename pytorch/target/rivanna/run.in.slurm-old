@@ -2,9 +2,9 @@
 
 # look at job.in.slurm to see if there is anything we need to add here
 
-#SBATCH --job-name={experiment.card_name}-multigpu-{experiment.p1}-{experiment.p2}-{experiment.repeat}
-#SBATCH --output={experiment.card_name}-{experiment.epoch}-{experiment.repeat}-multigpu-%u-%j.log                                                       
-#SBATCH --error={experiment.card_name}-{experiment.epoch}-{experiment.repeat}-multigpu-%u-%j.err   
+#SBATCH --job-name={experiment.card_name}-multigpu-{experiment.total_epochs}-{experiment.save_every}-{experiment.repeat}
+#SBATCH --output={experiment.card_name}-{experiment.epoch}-{experiment.repeat}-multigpu-%u-%j.log
+#SBATCH --error={experiment.card_name}-{experiment.epoch}-{experiment.repeat}-multigpu-%u-%j.err
 
 #SBATCH --nodes={experiment.nodes}
 #SBATCH --ntasks={experiment.ntasks}
@@ -17,7 +17,7 @@
 # # old SBATCH --output=multigpu-%u-%j.out
 # # old SBATCH --error=multigpu-%u-%j.err
 
-### the output and error dir are not set 
+### the output and error dir are not set
 
 hostname
 echo "SLURM_CPUS_ON_NODE: $SLURM_CPUS_ON_NODE"
@@ -49,8 +49,7 @@ echo "checking python..."
 singularity exec pytorch.sif python --version
 
 echo "executing..."
-# What is p1 and p2 really standing for, use proper names.
-singularity exec --nv pytorch.sif python multigpu.py {experiment.p1} {experiment.p2}
+singularity exec --nv pytorch.sif python multigpu.py {experiment.total_epochs} {experiment.save_every}
 
 echo "==================================================="
 seff $SLURM_JOB_ID

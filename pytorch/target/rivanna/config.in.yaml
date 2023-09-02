@@ -30,8 +30,8 @@ experiment:
   mem: "64GB"
   repeat: "1"
   epoch: "1,10,30,50,100"
-  p1: "50,100"
-  p2: "10"
+  total_epochs: "50,100"
+  save_every: "10"
 
 system:
   host: "rivanna"
@@ -45,4 +45,3 @@ system:
 
 # Output directory
 output_dir: "."
-
