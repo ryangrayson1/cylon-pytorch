@@ -1,30 +1,26 @@
+NAME=multigpu
+
 SHELL=/bin/bash
-USER_SCRATCH=/scratch/${USER}
-#
-# this needs to be fixed
-#
-PROJECT_DIR=${USER_SCRATCH}/cylon-pytorch
-# PROJECT_DATA=${USER_SCRATCH}/data
+#USER_SCRATCH=/scratch/${USER}
+#PROJECT_DIR=${USER_SCRATCH}/mlcommons/benchmarks/${NAME}
+#PROJECT_DATA=${USER_SCRATCH}/data
 
-NAME=cylon-pytorch
-
-.PHONY: image-singularity image-docker
+.PHONY: image-singularity image-docker project
 
 all: requirements data
 
-cloudmesh-install:
-	pip install cloudmesh-common -U
-	pip install cloudmesh-vpn -U
-	pip install cloudmesh-ee -U
-
+# #####################################################################
+# REQUIERMENTS
+# #####################################################################
 
 requirements:
-	time pip install -r requirements.txt
+	pip install -r requirements.txt
 
-data:
-	# fix me
+# #####################################################################
+# PROJECT MANAGEMENT
+# #####################################################################
 
-project: project.json generate
+project: clean project.json generate
 
 generate: jobs-project.sh 
 
@@ -33,14 +29,29 @@ run: submit
 submit:
 	-sh jobs-project.sh
 
+localscratch: localscratch.json
+
 
 jobs-%.sh: %.json
-	cms sbatch generate submit --name=$<  > $@
+	cms ee generate submit --name=$<  > $@
 
 
-%.json: 
-	cms sbatch generate \
-	           --source=job.in.slurm \
+simple:
+	cms ee generate \
+	           --source=simple.in.slurm \
+	           --config=$< \
+	           --name=$(basename $@) \
+	           --noos \
+	           --os=USER,HOME \
+		   	   --nocm \
+	           --output_dir=./$(basename $@) \
+               --source_dir=. \
+               --verbose
+
+
+%.json: config.in.yaml
+	cms ee generate \
+	           --source=${NAME}.in.slurm \
 	           --config=$< \
 	           --name=$(basename $@) \
 	           --noos \
@@ -48,7 +59,8 @@ jobs-%.sh: %.json
 		       --nocm \
 	           --output_dir=./$(basename $@) \
                --source_dir=. \
-               --verbose
+		       --verbose \
+			   --copycode="multigpu.py"
 
 kill: stop
 
@@ -68,17 +80,75 @@ status:
 
 clean:
 	@-rm -rf project project.json jobs-project.sh
-	@-rm -f rivanna.slurm
 	@-rm -rf '__pycache__'
 	@-rm -rf *~
 
 
+# #####################################################################
+# SINGULARITY IMAGE MANAGEMENT
+# #####################################################################
 
-image:
-	cms rivanna singularity build multigpu.def
+clean-images:
+	@-rm -rf image-singularity/*.sif
 
-run:
-	# fix me
+images: image
+
+image: image-haproxy image-osmi image-tfs
+
+image-haproxy: # image-singularity/haproxy_latest.sif
+	-mkdir -p image-singularity
+	-cd image-singularity; time singularity pull docker://haproxy
+
+image-serving:
+	-mkdir -p image-singularity
+	-cd image-singularity; cms rivanna singularity build serving.def
+
+image-tfs: # image-singularity/serving_latest-gpu.sif
+	-mkdir -p image-singularity
+	-cd image-singularity; time singularity pull docker://tensorflow/serving:latest-gpu
+
+image-osmi: # image-singularity/osmi.sif
+	-mkdir -p image-singularity
+	-cd image-singularity; cms rivanna singularity build ${NAME}.def
 
 shell:
-	# fix me
+	singularity ${BIND} shell --nv ${IMAGE}
+
+shell-serving:
+	singularity ${BIND} shell --nv image-singularity/serving.sif
+
+# #####################################################################
+# THESE ARE NOT YET DONE AND JUST PLACEHOLDERS
+# #####################################################################
+
+# run-osmi:
+# 	# cd image-singularity; make run
+
+
+run-singularity:
+	cd image-singularity; make run
+
+shell-singularity:
+	cd image-singularity; make shell
+
+run-localscratch:
+	cd image-singularity; make run-localscratch
+
+shell-localscratch:
+	cd image-singularity; make shell-localscratch
+
+shell-rivanna:
+	cd image-singularity; make shell-rivanna
+
+run: run-singularity
+
+# #####################################################################
+# THESE COMMANDS ARE ONLY FOR GREGOR
+# #####################################################################
+
+push:
+	-git push
+	ssh -tt rivanna "cd /scratch/thf2bn/mlcommons/benchmarks/${NAME}; ssh-add; git pull"
+
+
+
