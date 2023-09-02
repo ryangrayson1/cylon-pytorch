@@ -1,3 +1,5 @@
-**/blob/
+*blob/
 *.out
 *.err
+*.pt
+*.sif
