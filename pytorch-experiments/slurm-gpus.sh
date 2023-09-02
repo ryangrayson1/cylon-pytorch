@@ -36,12 +36,11 @@ which singularity
 echo "SHOULD HAVE 2 GPUs"
 nvidia-smi
 
-echo checking python..."
+echo "checking python..."
 singularity exec mydef.sif python --version
-singularity exec mydef.sif python -c "print('test')"
 
 echo "executing..."
-singularity exec --nv mydef.sif python multigpu.py
+singularity exec --nv mydef.sif python multigpu.py 50 10
 
 echo "==================================================="
 seff $SLURM_JOB_ID
