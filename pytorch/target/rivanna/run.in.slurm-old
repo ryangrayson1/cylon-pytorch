@@ -1,5 +1,11 @@
 #! /bin/sh
 
+# look at job.in.slurm to see if there is anything we need to add here
+
+#SBATCH --job-name={experiment.card_name}-multigpu-{experiment.p1}-{experiment.p2}-{experiment.repeat}
+#SBATCH --output={experiment.card_name}-{experiment.epoch}-{experiment.repeat}-multigpu-%u-%j.log                                                       
+#SBATCH --error={experiment.card_name}-{experiment.epoch}-{experiment.repeat}-multigpu-%u-%j.err   
+
 #SBATCH --nodes={experiment.nodes}
 #SBATCH --ntasks={experiment.ntasks}
 #SBATCH --time=01:00:00
@@ -8,8 +14,8 @@
 #SBATCH --reservation=bi_fox_dgx
 #SBATCH --gres=gpu:{experiment.gpus}
 #SBATCH --job-name=pytorch-gpu
-#SBATCH --output=multigpu-%u-%j.out
-#SBATCH --error=multigpu-%u-%j.err
+# # old SBATCH --output=multigpu-%u-%j.out
+# # old SBATCH --error=multigpu-%u-%j.err
 
 ### the output and error dir are not set 
 
@@ -48,3 +54,4 @@ singularity exec --nv pytorch.sif python multigpu.py {experiment.p1} {experiment
 
 echo "==================================================="
 seff $SLURM_JOB_ID
+OB
