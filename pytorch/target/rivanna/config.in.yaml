@@ -31,7 +31,6 @@ submission:
   platform: rivanna
   accelerators_per_node: 1
 
-
 benchmark:
   name: Osmi
   user: Gregor von Laszewski
@@ -108,4 +107,6 @@ model_config_list:
   large_tcnn:
     base_path: "{project.user}/osmi/models/large_tcnn"
     model_platform: "tensorflow"
+
+
 
