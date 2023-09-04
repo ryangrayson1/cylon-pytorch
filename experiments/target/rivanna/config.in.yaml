@@ -59,7 +59,7 @@ constant:
 
 project:
   user: "/project/bii_dsc_community/{os.USER}"
-  dir: "/project/bii_dsc_community/{os.USER}/cylon-pytorch/pytorch"
+  dir: "/project/bii_dsc_community/{os.USER}/cylon-pytorch/experiments"
 
 # this is a bug we should be able to use project.dir, it does not show properly in the slurm script
 data:

@@ -4,3 +4,5 @@
 *.pt
 *.sif
 project/
+*jobs-project.sh
+*project.json

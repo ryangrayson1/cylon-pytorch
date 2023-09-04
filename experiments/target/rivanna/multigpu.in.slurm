@@ -71,7 +71,7 @@ module load singularity gcc/11.2.0 openmpi/4.1.4 python/3.11.1
 
 source $USER_PROJECT/ENV/bin/activate
 
-singularity exec --nv {data.pytorch_sif} python multigpu.py {total_epochs} {save_every} --batch_size={batch}
+singularity exec --nv {data.pytorch_sif} python multigpu.py {experiment.total_epochs} {experiment.save_every} --batch_size={experiment.batch}
 
 echo "==================================================="
 seff $SLURM_JOB_ID
