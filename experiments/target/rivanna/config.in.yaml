@@ -1,0 +1,99 @@
+
+name: cloudmask-rivanna
+
+ee:
+  time: "6:00:00"
+  mode: h
+  dir: scratch
+  nodes: 1
+  ntasks: 2
+  mem: 16G
+
+system:
+  host: "rivanna"
+  python: "3.11.1"
+  num_cpus: 1
+  platform: rivanna
+  accelerators_per_node: 1
+  constraint: ""
+  reservation: ""
+
+# Submission Information
+submission:
+  name: cloudmask
+  submitter: Ryan Grayson
+  email: rtg5xkh@virginia.edu
+  org: University of Virginia
+  division: open
+  status: completed
+  platform: rivanna
+  accelerators_per_node: 1
+
+benchmark:
+  name: Cylon Pytorch
+  user: Ryan Grayson
+  e-mail: rtg5xkh@virginia.edu
+  organisation: University of Virginia
+  division: closed
+  status: completed
+  platform: rivanna
+
+experiment:
+  card_name: "a100,v100" # "v100,p100"
+  server: "localhost"
+  batch: "16,32"
+  ngpus: "1,2,4"
+  concurrency: "1"
+  model: "small_lstm"
+  repeat: "1"
+  total_epochs: "50"
+  save_every: "10"
+
+constant:
+  server: "localhost"
+  tfs_base_port: 8500
+  haproxy_port: 8443
+  # config: "config.yaml"
+  nrequests: 32768
+  # algorithm: tfs_grpc_client.py
+
+project:
+  user: "/project/bii_dsc_community/{os.USER}"
+  dir: "/project/bii_dsc_community/{os.USER}/cylon-pytorch/pytorch"
+
+# this is a bug we should be able to use project.dir, it does not show properly in the slurm script
+data:
+  output: "./outputs"
+  sif_dir: "{project.dir}/target/rivanna/image-singularity"
+  pytorch_sif: "{data.sif_dir}/mydef.sif"
+  # haproxy_sif: "{data.sif_dir}/haproxy_latest.sif"
+  # tfs_sif: "{data.sif_dir}/serving_latest-gpu.sif"
+  # osmi_sif: "{data.sif_dir}/osmi.sif"
+  # haproxy_cfg_file: haproxy-grpc.cfg
+
+test:
+  a: "a"
+  b: "{test.a}"
+
+# config:
+#   server: "localhost"
+#   gpu: "A100" #"V100-SXM2-32GB"
+#   batch: [1,2,4,8,16,32,64,128,256,512,1024]
+#   nrequests: [32768]
+#   ngpus: [1]
+#   concurrency: [1,2,4,6,8]
+#   ports: [8500]
+#   model: ["small_lstm","medium_cnn","large_tcnn"]
+
+user: "{os.USER}"
+
+# model_config_list:
+#   small_lstm:
+#     base_path: "{project.user}/osmi/models/small_lstm"
+#     model_platform: "tensorflow"
+#   medium_cnn:
+#     base_path: "{project.user}/osmi/models/medium_cnn"
+#     model_platform: "tensorflow"
+#   large_tcnn:
+#     base_path: "{project.user}/osmi/models/large_tcnn"
+#     model_platform: "tensorflow"
