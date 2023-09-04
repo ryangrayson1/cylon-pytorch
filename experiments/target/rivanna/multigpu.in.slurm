@@ -45,22 +45,11 @@ echo "# ==================================="
 echo "# PROJECT info"
 echo "# ==================================="
 
-# WORKDIR=$USER_PROJECT/osmi
-# SIF_DIR=$WORKDIR/target/rivanna/image-singularity
 USER_PROJECT=/project/bii_dsc_community/$USER
-# CONFIG_FILE=config.yaml
-# TFS_SIF={data.tfs_sif}
-# HAPROXY_SIF={data.haproxy_sif}
-# OSMI_SIF={data.osmi_sif}
+PYTORCH_SIF={data.pytorch_sif}
 
-# echo NAME $NAME
-# echo WORKDIR $WORKDIR
-# echo SIF_DIR $SIF_DIR
 echo USER_PROJECT $USER_PROJECT
-# echo CONFIG_FILE $CONFIG_FILE
-# echo TFS_SIF $TFS_SIF
-# echo HAPROXY_SIF $HAPROXY_SIF
-# echo OSMI_SIF $OSMI_SIF
+echo PYTORCH_SIF
 
 mkdir -p {data.output}
 
@@ -75,35 +64,3 @@ singularity exec --nv {data.pytorch_sif} python multigpu.py {experiment.total_ep
 
 echo "==================================================="
 seff $SLURM_JOB_ID
-
-# python ModelServer.py --config=$CONFIG_FILE
-
-# python LoadBalancer.py --config=$CONFIG_FILE
-
-# python simple_osmi.py --config=$CONFIG_FILE
-
-
-# singularity exec --nv --bind /localscratch:/localscratch $TFS_SIF \
-#     python3 ModelServer.py --config=$CONFIG_FILE
-
-# singularity exec --nv --bind /localscratch:/localscratch $HAPROXY_SIF \
-#     python3 LoadBalancer.py --config=$CONFIG_FILE
-
-# singularity exec --nv --bind /localscratch:/localscratch $OSMI_SIF \
-#     python simple_osmi.py --config=$CONFIG_FILE
-
-
-
-# start osmi bench program with correct number of instanciations (concurrency) through command line
-# singularity exec??
-# shutdown model server
-# shutdown haproxy
-
-
-
-#     # python ModelServer.py --port=$PORT_TF_SERVER_BASE --num_gpus=$NUM_GPUS_PER_NODE --output_dir=$OUTPUT_DIR
-
-# PROGRESS "running" 2
-#     # python LoadBalancer.py -p 8443 -o ../../osmi-output/ -c haproxy-grpc.cfg
-
-# PROGRESS "running" 3

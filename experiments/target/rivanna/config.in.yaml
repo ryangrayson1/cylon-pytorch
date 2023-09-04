@@ -66,10 +66,6 @@ data:
   output: "./outputs"
   sif_dir: "{project.dir}/target/rivanna/image-singularity"
   pytorch_sif: "{data.sif_dir}/mydef.sif"
-  # haproxy_sif: "{data.sif_dir}/haproxy_latest.sif"
-  # tfs_sif: "{data.sif_dir}/serving_latest-gpu.sif"
-  # osmi_sif: "{data.sif_dir}/osmi.sif"
-  # haproxy_cfg_file: haproxy-grpc.cfg
 
 test:
   a: "a"
