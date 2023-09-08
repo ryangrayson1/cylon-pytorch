@@ -1,4 +1,4 @@
-NAME=multigpu
+NAME=pytorch
 
 SHELL=/bin/bash
 #USER_SCRATCH=/scratch/${USER}
@@ -22,7 +22,7 @@ requirements:
 
 project: clean project.json generate
 
-generate: jobs-project.sh 
+generate: jobs-project.sh
 
 run: submit
 
@@ -60,7 +60,7 @@ simple:
 	           --output_dir=./$(basename $@) \
                --source_dir=. \
 		       --verbose \
-			   --copycode="multigpu.py"
+			   --copycode="multigpu.py,distributed.py"
 
 kill: stop
 
@@ -149,6 +149,3 @@ run: run-singularity
 push:
 	-git push
 	ssh -tt rivanna "cd /scratch/thf2bn/mlcommons/benchmarks/${NAME}; ssh-add; git pull"
-
-
-
