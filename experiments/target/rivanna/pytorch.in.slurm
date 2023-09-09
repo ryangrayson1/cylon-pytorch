@@ -8,7 +8,7 @@
 #SBATCH --ntasks={ee.ntasks}
 #SBATCH --mem={ee.mem}
 #SBATCH --gres=gpu:{experiment.card_name}:{experiment.ngpus}
-#SBATCH --cpus-per-task=1
+#SBATCH --cpus-per-task={experiment.ncpus}
 #SBATCH --time={ee.time}
 
 
@@ -63,8 +63,14 @@ source $USER_PROJECT/ENV/bin/activate
 echo "executing multigpu example..."
 singularity exec --nv {data.pytorch_sif} python multigpu.py {experiment.total_epochs} {experiment.save_every} --batch_size={experiment.batch}
 
-echo "executing distributed example..."
-singularity exec --nv {data.pytorch_sif} python distributed.py
+echo "executing distributed simple example..."
+singularity exec --nv {data.pytorch_sif} python distributed_simple.py
+
+echo "executing distributed training example..."
+singularity exec --nv {data.pytorch_sif} python distributed_training.py
+
+echo "executing distributed mpi example..."
+singularity exec --nv {data.pytorch_sif} mpirun -n 4 python distributed_mpi.py --oversubscribe
 
 echo "==================================================="
 seff $SLURM_JOB_ID

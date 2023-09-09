@@ -43,6 +43,7 @@ experiment:
   server: "localhost"
   batch: "16,32"
   ngpus: "1,2,4"
+  ncpus: "4"
   concurrency: "1"
   model: "small_lstm"
   repeat: "1"

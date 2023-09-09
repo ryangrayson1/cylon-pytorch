@@ -60,7 +60,7 @@ simple:
 	           --output_dir=./$(basename $@) \
                --source_dir=. \
 		       --verbose \
-			   --copycode="multigpu.py,distributed.py"
+			   --copycode="multigpu.py,distributed_simple.py,distributed_training.py,distributed_mpi.py"
 
 kill: stop
 
