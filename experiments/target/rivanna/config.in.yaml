@@ -41,8 +41,8 @@ benchmark:
 experiment:
   card_name: "a100,v100" # "v100,p100"
   server: "localhost"
-  batch: "16,32"
-  ngpus: "1,2,4"
+  batch: "32"
+  ngpus: "2,4"
   ncpus: "4"
   concurrency: "1"
   model: "small_lstm"
